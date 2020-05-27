@@ -27,6 +27,19 @@ Route::prefix('v1')->group(function () {
             Route::get('logout','UserController@logout');
         });
     });
+    Route::group([
+        'prefix'=>'categories',
+        'middleware'=>'auth:api'
+    ],function(){
+        Route::post('/','CategoryController@insert');
+        Route::put('/{id}','CategoryController@update');
+    });
+    Route::group([
+        'prefix'=>'products',
+        'middleware'=>'auth:api'
+    ],function(){
+        Route::post('/','ProductController@insert');
+    });
 });
 
 // router.post('/',UserController.register);
