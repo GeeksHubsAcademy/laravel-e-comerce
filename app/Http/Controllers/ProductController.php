@@ -1,4 +1,4 @@
-<?php
+     <?php
 
 namespace App\Http\Controllers;
 
@@ -83,13 +83,19 @@ class ProductController extends Controller
     }
     public function uploadImage(Request $request, $id)
     {
-        $request->validate(['img' => 'required|image']);
-        // $request->validate(['imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
-        $product = Product::find($id);
-        $imageName = time() . '.' . request()->img->getClientOriginalExtension();//time() es como Date.now()
-        request()->img->move('images/products', $imageName);//mueve el archivo subido al directorio indicado (en este caso public path es dentro de la carpeta public)
-        $product->update(['image_path' => $imageName]);
-        return response($product);
+        try {
+            $request->validate(['img' => 'required|image']);
+            // $request->validate(['imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+            $product = Product::find($id);//buscamos el producto a actualizar la ruta de la imagen
+            $imageName = time() . '-' . request()->img->getClientOriginalName();//time() es como Date.now()
+            request()->img->move('images/products', $imageName);//mueve el archivo subido al directorio indicado (en este caso public path es dentro de la carpeta public)
+            $product->update(['image_path' => $imageName]);//actualizamos el image_path con el nuevo nombre de la imagen
+            return response($product);
+        } catch (\Exception $e) {
+            return response([
+                'error' => $e,
+            ], 500);
+        }
     }
     public function delete($id)
     {
