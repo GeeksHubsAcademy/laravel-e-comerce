@@ -13,6 +13,13 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
-        $this->assertTrue(true);
+
+        $this->assertSame($this->suma(2,2),4);
+        $this->assertSame($this->suma(2,5),7);
+    }
+    public function suma($a,$b)
+    {
+        $result = $a+$b;
+        return $result;
     }
 }

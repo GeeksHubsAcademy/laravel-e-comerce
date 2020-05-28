@@ -31,14 +31,18 @@ Route::prefix('v1')->group(function () {
         'prefix'=>'categories',
         'middleware'=>'auth:api'
     ],function(){
-        Route::post('/','CategoryController@insert');
-        Route::put('/{id}','CategoryController@update');
+        Route::post('','CategoryController@insert');
+        Route::put('{id}','CategoryController@update');
     });
     Route::group([
         'prefix'=>'products',
         'middleware'=>'auth:api'
     ],function(){
-        Route::post('/','ProductController@insert');
+        Route::get('','ProductController@getAll');
+        Route::get('restore/{id}','ProductController@restore');
+        Route::post('','ProductController@insert');
+        Route::put('{id}','ProductController@update');
+        Route::delete('{id}','ProductController@delete');
     });
 });
 
