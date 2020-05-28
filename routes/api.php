@@ -41,6 +41,7 @@ Route::prefix('v1')->group(function () {
         Route::get('','ProductController@getAll');
         Route::get('restore/{id}','ProductController@restore');
         Route::post('','ProductController@insert');
+        Route::post('/image/{id}','ProductController@uploadImage');
         Route::put('{id}','ProductController@update');
         Route::delete('{id}','ProductController@delete');
     });
