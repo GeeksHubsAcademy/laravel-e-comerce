@@ -46,7 +46,4 @@ Route::prefix('v1')->group(function () {
         Route::delete('{id}','ProductController@delete');
     });
 });
-
-// router.post('/',UserController.register);
-
-// app.use('/users',usersRouter)
+// Route::resource('payments', 'PaymentController');
