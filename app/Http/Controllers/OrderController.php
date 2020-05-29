@@ -14,6 +14,15 @@ class OrderController extends Controller
     {
        try {
            $orders = Order::with(['products.categories','user'])->get();
+        //    Order.findAll({
+        //      include:[
+        //        {
+        //            model:Product，
+        //            include:[Category]
+        //        },
+        //        User
+        //     ]
+        //     })
            return response($orders);
        } catch (\Exception $e) {
           return response($e,500);
@@ -31,7 +40,9 @@ class OrderController extends Controller
             $products=$body['products'];
             unset($body['products']); //agregamos unset para eliminar la propiedad/elemento del objeto/array , eliminamos el elemento products para no tener error al crear el order
             $order = Order::create($body);
+            //order=Order.create(req.body)
             $order->products()->attach($products);
+            //order.addProduct(req.body.products)
             $order = $order->load('user','products');
             Mail::to($order->user->email)->send(new OrderShipped($order));
             return response($order, 201);
