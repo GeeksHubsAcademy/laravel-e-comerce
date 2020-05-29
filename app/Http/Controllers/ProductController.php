@@ -14,7 +14,7 @@ class ProductController extends Controller
         try {
             // $products = Product::withTrashed()->get();//me saca también los eliminados
 
-            $products = Product::all();//no saca los eliminados con deleted_at
+            $products = Product::with('categories')->get();//no saca los eliminados con deleted_at
             return response($products);
         } catch (\Exception $e) {
             return response([
