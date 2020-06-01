@@ -60,6 +60,7 @@
         text-align: center;
 
     }
+
     .cuerpoTitulo div {
         padding: 0.4rem;
         background-color: #e3e3e3;
@@ -104,26 +105,34 @@
         flex: 1;
         text-align: center;
     }
-    .codigo{
+
+    .codigo {
         border-top-left-radius: 15px;
     }
-    .descripcion{
+
+    .descripcion {
         border-radius: 0px;
     }
-    .formato{
+
+    .formato {
         border-radius: 0px
     }
-    .ean{
+
+    .ean {
         border-radius: 0px
     }
-    .cantidad{
+
+    .cantidad {
         border-top-right-radius: 15px;
     }
 </style>
 
 <body class="emailPedido">
-    <div class="logoHeader">
-        <!-- <img src="" alt="Grupo Caps logo"> -->
+    <div class="logoHeader" style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;">
+        <img src="" alt="Grupo Caps logo">
         <div></div>
     </div>
     <div class="headers" style="display: flex;">
@@ -161,24 +170,47 @@
 
         </div>
     </div>
-    <div class="cuerpoTitulo">
+    <div class="cuerpoTitulo" style="
+        flex: 1;
+        text-align: center;">
         <div class="codigo">CÓDIGO</div>
 
-        <div class="descripcion">NOMBRE</div> 
-        <div class="descripcion">DESCRIPCIÓN</div>
+        <div class="descripcion" style="
+        flex: 1;
+        text-align: center;">NOMBRE</div>
+        <div class="descripcion" style="
+        flex: 1;
+        text-align: center;">DESCRIPCIÓN</div>
 
-        <div class="price">PRECIO</div>
-        <div class="ean">EAN</div>
-        <div class="cantidad">CANT.</div>
+        <div class="price" style="
+        width: 6rem;
+        text-align: center;">PRECIO</div>
+        <div class="ean" style="
+        width: 6rem;
+        text-align: center;">EAN</div>
+        <div class="cantidad" style="
+        width: 6rem;
+        text-align: center;">CANT.</div>
 
     </div>
-    <div class="cuerpo">
+    <div class="cuerpo" style=" margin: 0.5rem 0;
+        border: 1px solid black;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;">
         @foreach ($order->products as $product)
-        <div class="producto" style="display: flex;">
-            <div class="cod_prod">{{$product->id}}</div>
-            <div class="nombre">{{$product->name}}</div>
-            <div class="formato">{{$product->description}}</div>
-            <div class="cantidad">{{$product->pivot->units}}</div>
+        <div class="producto" style="display: flex;justify-content:space-between;padding: 0.5rem;">
+            <div class="cod_prod" styel="
+        width: 6rem;
+        text-align: center;">{{$product->id}}</div>
+            <div class="nombre" style="
+        width: 6rem;
+        text-align: center;">{{$product->name}}</div>
+            <div class="formato" style="
+        width: 6rem;
+        text-align: center;">{{$product->description}}</div>
+            <div class="cantidad" style="
+        width: 6rem;
+        text-align: center;">{{$product->pivot->units}}</div>
         </div>
         @endforeach
     </div>
