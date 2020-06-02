@@ -36,12 +36,12 @@ class UserController extends Controller
                     'message' => 'Wrong credentials'
                 ], 400);
             }
-            $user = Auth::user();
+            $user = Auth::user(); //req.user
             $token = $user->createToken('authToken')->accessToken;
-            $user->token=$token;
+            $user->token = $token;
             return response([
-                'user'=>$user,
-                'token'=>$token
+                'user' => $user,
+                'token' => $token
             ]);
         } catch (\Exception $e) {
             return response([
@@ -56,7 +56,7 @@ class UserController extends Controller
             // Auth::user()->token()->delete();
             Auth::user()->token()->revoke();
             return response([
-                'message'=>'User successfully disconected.'
+                'message' => 'User successfully disconected.'
             ]);
         } catch (\Exception $e) {
             return response([
@@ -65,7 +65,40 @@ class UserController extends Controller
             ], 500);
         }
     }
-    
+    public function update(Request $request)
+    {
+        try {
+            $body = $request->validate([
+                'name' => 'string',
+                'email' => 'string',
+                'password' => 'string'
+            ]);
+            $id = Auth::id();
+            $user = User::find($id);
+            if ($request->has('password')){
+                $body['password']=Hash::make($body['password']);
+            }
+            $user->update($body);
+            return response($user);
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'There was an error trying to update the user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function getUserInfo()
+    {
+        try {
+            $user =Auth::user();
+            return response($user);
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'There was an error trying to get the user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
 // const UserController ={
 //     async register(req,res){
