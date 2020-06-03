@@ -22,4 +22,8 @@ class Product extends Model
     {
        return $this->belongsToMany('\App\Order');
     }
+    function comments()
+    {
+        return $this->morphMany('\App\Comment','commentable');//commentable hace referencia al nombre de la tabla
+    }
 }
