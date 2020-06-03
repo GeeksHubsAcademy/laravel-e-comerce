@@ -112,6 +112,7 @@ class ProductController extends Controller
             $product->update(['image_path' => $imageName]); //actualizamos el image_path con el nuevo nombre de la imagen
             return response($product);
         } catch (\Exception $e) {
+            dd($e);
             return response([
                 'error' => $e,
             ], 500);
