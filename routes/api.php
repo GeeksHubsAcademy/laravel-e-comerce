@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:api')->group(function(){
             Route::get('info','UserController@getUserInfo');
             Route::get('logout','UserController@logout');
+            Route::post('comment/{id}','UserController@addComment');
             Route::put('','UserController@update');
         });
     });
@@ -42,6 +43,8 @@ Route::prefix('v1')->group(function () {
         // 'middleware'=>['auth:api','checkRole:admin|Dios']//crucial el orden de la array pues marca el orden de ejecución
     ],function(){
         Route::get('','ProductController@getAll');
+        Route::get('{id}','ProductController@getOne');
+        Route::post('comment/{id}','ProductController@addComment')->middleware('auth:api');
         Route::middleware(['auth:api','checkRole:admin|Dios'])->group(function(){
             Route::get('restore/{id}','ProductController@restore');
             Route::post('','ProductController@insert');

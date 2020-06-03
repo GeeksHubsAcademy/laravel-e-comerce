@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,6 +99,26 @@ class UserController extends Controller
                 'message' => 'There was an error trying to get the user',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+    public function addComment(Request $request,$id)
+    {
+        try {
+            $body = $request->validate([
+                'body' => 'string',
+                'stars' => 'required|integer|min:1|max:5'
+            ]);
+            $user = User::find($id);//usuario sobre el que se hace el comentario
+            $body['user_id'] = Auth::id();//usuario que hace el comentario
+            $comments =$user->comments()->where('user_id',$body['user_id'])->get();//buscamos los comentarios del usuario sobre este usuario/vendedor
+            if($comments->isNotEmpty()){//si no esta vacío, significa que el usuario ha comentado con anterioridad y por ende no puede comentar.
+                return response(['message'=>'You cannot review the same seller/user twice'],400);
+            }
+            $comment = new Comment($body);
+            $user->comments()->save($comment);
+            return $user->load('comments.user');
+        } catch (\Exception $e) {
+            return response( $e, 500);
         }
     }
 }

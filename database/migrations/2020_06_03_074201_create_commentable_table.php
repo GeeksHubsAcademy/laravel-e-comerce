@@ -15,9 +15,10 @@ class CreateCommentableTable extends Migration
     {
         Schema::create('commentable', function (Blueprint $table) {
             $table->id();
-            $table->text('body');
+            $table->text('body')->nullable();
+            $table->integer('stars')->min(0)->max(5);
             $table->integer('commentable_id');// dice el id del usuario/producto sobre el que se ha hecho el comentairo 
-            $table->integer('commentable_type');//dice si se ha hecho sobre un producto o un usuario
+            $table->string('commentable_type');//dice si se ha hecho sobre un producto o un usuario
             $table->integer('user_id');//el autor del comentario
             $table->timestamps();
         });

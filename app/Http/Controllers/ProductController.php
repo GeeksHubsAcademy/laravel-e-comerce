@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Comment;
 use App\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
@@ -14,13 +17,25 @@ class ProductController extends Controller
         try {
             // $products = Product::withTrashed()->get();//me saca también los eliminados
 
-            $products = Product::with('categories')->get();//no saca los eliminados con deleted_at
+            $products = Product::with('categories')->get(); //no saca los eliminados con deleted_at
             return response($products);
         } catch (\Exception $e) {
             return response([
                 'error' => $e
             ], 500);
         }
+    }
+    public function getOne($id)
+    {
+        try {
+            $product = Product::find($id)->load('comments.user');
+            return response($product);
+        } catch (\Exception $e) {
+            return response([
+                'error' => $e
+            ], 500);
+        }
+      
     }
     public function insert(Request $request)
     {
@@ -85,10 +100,10 @@ class ProductController extends Controller
         try {
             $request->validate(['img' => 'required|image']);
             // $request->validate(['imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
-            $product = Product::find($id);//buscamos el producto a actualizar la ruta de la imagen
-            $imageName = time() . '-' . request()->img->getClientOriginalName();//time() es como Date.now()
-            request()->img->move('images/products', $imageName);//mueve el archivo subido al directorio indicado (en este caso public path es dentro de la carpeta public)
-            $product->update(['image_path' => $imageName]);//actualizamos el image_path con el nuevo nombre de la imagen
+            $product = Product::find($id); //buscamos el producto a actualizar la ruta de la imagen
+            $imageName = time() . '-' . request()->img->getClientOriginalName(); //time() es como Date.now()
+            request()->img->move('images/products', $imageName); //mueve el archivo subido al directorio indicado (en este caso public path es dentro de la carpeta public)
+            $product->update(['image_path' => $imageName]); //actualizamos el image_path con el nuevo nombre de la imagen
             return response($product);
         } catch (\Exception $e) {
             return response([
@@ -131,6 +146,27 @@ class ProductController extends Controller
             return response([
                 'error' => $e,
             ], 500);
+        }
+    }
+    public function addComment(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'body' => 'string',
+                'stars' => 'required|integer|min:1|max:5'
+            ]);
+            $body = $request->all();
+            $product = Product::find($id);
+            $body['user_id'] = Auth::id();
+            $comments =$product->comments()->where('user_id',$body['user_id'])->get();//buscamos los comentarios del usuario sobre este producto
+            if($comments->isNotEmpty()){//si no esta vacío, significa que el usuario ha comentado con anterioridad y por ende no puede comentar.
+                return response(['message'=>'You cannot review the same product twice'],400);
+            }
+            $comment = new Comment($body);
+            $product->comments()->save($comment);
+            return response($product->load('comments.user'));
+        } catch (\Exception $e) {
+            return response( $e, 500);
         }
     }
 }
