@@ -91,6 +91,7 @@ class UserController extends Controller
     {
         try {
             $user =Auth::user();
+            //$request->user() //ambas son lo mismo que req.user
             return response($user);
         } catch (\Exception $e) {
             return response([
