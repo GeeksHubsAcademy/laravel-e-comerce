@@ -101,15 +101,10 @@ class ProductController extends Controller
             $request->validate(['img' => 'required|image']);
             // $request->validate(['imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
             $product = Product::find($id); //buscamos el producto a actualizar la ruta de la imagen
-            $imageName = time() . '-' . request()->img->getClientOriginalName(); //time() es como Date.now()
+            // $imageName = time() . '-' . request()->img->getClientOriginalName(); //time() es como Date.now()
             // request()->img->move('images/products', $imageName); //mueve el archivo subido al directorio indicado (en este caso public path es dentro de la carpeta public)
-            $s3=new S3Client([
-                'version'  => '2006-03-01',
-                'region'   => 'us-east-1',
-            ]);
-            $bucket = env('AWS_BUCKET')?: die('No "AWS_BUCKET" config var in found in env!');
-            $s3->upload($bucket,$imageName,request()->img);
-            $product->update(['image_path' => $imageName]); //actualizamos el image_path con el nuevo nombre de la imagen
+            $image_path = $request->img->store('images/products','s3');
+            $product->update(['image_path' => $image_path]); //actualizamos el image_path con el nuevo nombre de la imagen
             return response($product);
         } catch (\Exception $e) {
             dd($e);
